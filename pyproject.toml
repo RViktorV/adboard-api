@@ -8,6 +8,11 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 django = "4.2"
+djangorestframework = "^3.15.2"
+psycopg2-binary = "^2.9.10"
+django-cors-headers = "^4.5.0"
+drf-yasg = "^1.21.8"
+load-dotenv = "^0.1.0"
 
 
 [build-system]
