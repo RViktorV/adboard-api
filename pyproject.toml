@@ -13,8 +13,15 @@ psycopg2-binary = "^2.9.10"
 django-cors-headers = "^4.5.0"
 drf-yasg = "^1.21.8"
 load-dotenv = "^0.1.0"
+black = "^24.10.0"
+djangorestframework-simplejwt = "^5.3.1"
+pillow = "^11.0.0"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 119
+exclude = "migrations"
