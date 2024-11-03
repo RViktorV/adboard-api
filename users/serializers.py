@@ -13,7 +13,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User  # Модель, с которой будет работать сериализатор
-        fields = ('email', 'first_name', 'last_name', 'password', 'phone', 'role', 'avatar')  # Поля, которые будут сериализованы
+        fields = ('email', 'first_name', 'last_name', 'password', 'phone', 'role', 'avatar', 'id')  # Поля, которые будут сериализованы
 
     def create(self, validated_data):
         """

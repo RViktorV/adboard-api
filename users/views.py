@@ -18,6 +18,9 @@ from django.conf import settings
 from rest_framework.exceptions import ValidationError
 from django.utils.http import urlsafe_base64_decode
 
+from rest_framework.permissions import (AllowAny, IsAuthenticated)
+from rest_framework import viewsets
+
 class RegisterView(generics.CreateAPIView):
     """
     Представление для регистрации новых пользователей.
@@ -153,3 +156,39 @@ class ResetPasswordConfirmView(APIView):
         user.save()  # Сохраняем изменения
 
         return Response({"message": "Пароль успешно изменён."}, status=status.HTTP_200_OK)
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = RegisterSerializer
+    permission_classes = [IsAuthenticated]  # Закрываем доступ авторизацией
+
+
+class UserProfileView(APIView):
+    """
+    Представление для получения информации о профиле пользователя.
+    """
+
+    permission_classes = [IsAuthenticated]  # Доступ только для аутентифицированных пользователей
+
+    def get(self, request):
+        """
+        Обрабатывает GET-запрос для получения информации о пользователе.
+
+        Args:
+            request (Request): Объект запроса.
+
+        Returns:
+            Response: Ответ с данными о пользователе.
+        """
+        user = request.user  # Получаем текущего аутентифицированного пользователя
+        user_data = {
+            "username": user.username,
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "id": user.id,
+            "role": user.role,
+            "password": user.password
+        }
+        return Response(user_data)
