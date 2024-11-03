@@ -34,4 +34,7 @@ urlpatterns = [
     path(
         "users/", include("users.urls", namespace="users")
     ),  # Подключаем отдельные маршруты для пользователей
+    # path(
+    #     "ads/", include("ads.urls", namespace="ads")
+    # ),  # Подключаем отдельные маршруты для пользователей
 ]
