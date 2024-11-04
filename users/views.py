@@ -18,8 +18,9 @@ from django.conf import settings
 from rest_framework.exceptions import ValidationError
 from django.utils.http import urlsafe_base64_decode
 
-from rest_framework.permissions import (AllowAny, IsAuthenticated)
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import viewsets
+
 
 class RegisterView(generics.CreateAPIView):
     """
@@ -53,14 +54,18 @@ class RegisterView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)  # Проверяем валидность данных
         user = serializer.save()  # Сохраняем нового пользователя
         refresh = RefreshToken.for_user(user)  # Генерируем токены для нового пользователя
-        return Response({
-            "user": RegisterSerializer(user, context=self.get_serializer_context()).data,  # Данные пользователя
-            "refresh": str(refresh),  # Токен refresh
-            "access": str(refresh.access_token),  # Токен access
-        })
+        return Response(
+            {
+                "user": RegisterSerializer(user, context=self.get_serializer_context()).data,  # Данные пользователя
+                "refresh": str(refresh),  # Токен refresh
+                "access": str(refresh.access_token),  # Токен access
+            }
+        )
 
 
 User = get_user_model()  # Получаем кастомную модель пользователя
+
+
 class ResetPasswordRequestView(APIView):
     """
     Представление для запроса сброса пароля.
@@ -93,7 +98,9 @@ class ResetPasswordRequestView(APIView):
             token = default_token_generator.make_token(user)  # Генерируем токен
             uid = urlsafe_base64_encode(force_bytes(user.pk))  # Кодируем ID пользователя
 
-            reset_url = f"{settings.FRONTEND_URL}/reset_password_confirm/{uid}/{token}/"  # Формируем ссылку для сброса пароля
+            reset_url = (
+                f"{settings.FRONTEND_URL}/reset_password_confirm/{uid}/{token}/"  # Формируем ссылку для сброса пароля
+            )
 
             # Формирование и отправка email
             subject = "Сброс пароля"  # Тема письма
@@ -105,8 +112,9 @@ class ResetPasswordRequestView(APIView):
             )
             send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])  # Отправляем email
 
-            return Response({"message": "Ссылка для сброса пароля отправлена на указанный email."},
-                            status=status.HTTP_200_OK)
+            return Response(
+                {"message": "Ссылка для сброса пароля отправлена на указанный email."}, status=status.HTTP_200_OK
+            )
         except User.DoesNotExist:
             return Response({"error": "Пользователь с таким email не найден."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -189,6 +197,6 @@ class UserProfileView(APIView):
             "last_name": user.last_name,
             "id": user.id,
             "role": user.role,
-            "password": user.password
+            "password": user.password,
         }
         return Response(user_data)

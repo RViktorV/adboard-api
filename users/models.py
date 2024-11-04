@@ -10,20 +10,19 @@ class User(AbstractUser):
     username = None  # Убираем поле username
 
     ROLE_CHOICES = [
-        ('user', 'User'),
-        ('admin', 'Admin'),
+        ("user", "User"),
+        ("admin", "Admin"),
     ]
-    email = models.EmailField(
-        unique=True, verbose_name="Email", help_text="Электронная почта"
-    )
+    email = models.EmailField(unique=True, verbose_name="Email", help_text="Электронная почта")
 
-    phone = models.CharField(max_length=15,
+    phone = models.CharField(
+        max_length=15,
         verbose_name="Телефон",
         help_text="Введите номер телефона",
         **NULLABLE,
     )
 
-    role = models.CharField(max_length=5, choices=ROLE_CHOICES, default='user')
+    role = models.CharField(max_length=5, choices=ROLE_CHOICES, default="user")
 
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)

@@ -19,22 +19,14 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path(
-        "swagger<format>/", schema_view.without_ui(cache_timeout=0), name="schema-json"
-    ),
+    path("admin/", admin.site.urls),
+    path("swagger<format>/", schema_view.without_ui(cache_timeout=0), name="schema-json"),
     path(
         "swagger/",
         schema_view.with_ui("swagger", cache_timeout=0),
         name="schema-swagger-ui",
     ),
-    path(
-        "redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
-    ),
-    path(
-        "users/", include("users.urls", namespace="users")
-    ),  # Подключаем отдельные маршруты для пользователей
-    # path(
-    #     "ads/", include("ads.urls", namespace="ads")
-    # ),  # Подключаем отдельные маршруты для пользователей
+    path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+    path("users/", include("users.urls", namespace="users")),  # Подключаем отдельные маршруты для пользователей
+    path("ads/", include("ads.urls")),  # Подключаем отдельные маршруты для объявлений и отзывов
 ]

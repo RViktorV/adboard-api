@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()  # Получаем модель пользователя
 
+
 class Ad(models.Model):
     """
     Модель объявления.
@@ -14,6 +15,7 @@ class Ad(models.Model):
     - author: Пользователь, который создал объявление.
     - created_at: Время и дата создания объявления.
     """
+
     title = models.CharField(max_length=255)  # Название товара
     price = models.PositiveIntegerField()  # Цена товара (целое число)
     description = models.TextField()  # Описание товара
@@ -21,7 +23,7 @@ class Ad(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)  # Время и дата создания объявления
 
     class Meta:
-        ordering = ['-created_at']  # Сортировка по дате создания (чем новее, тем выше)
+        ordering = ["-created_at"]  # Сортировка по дате создания (чем новее, тем выше)
         verbose_name = "Объявление"
         verbose_name_plural = "Объявления"
 
@@ -44,9 +46,12 @@ class Review(models.Model):
     - ad: Объявление, под которым оставлен отзыв.
     - created_at: Время и дата создания отзыва.
     """
+
     text = models.TextField()  # Текст отзыва
     author = models.ForeignKey(User, on_delete=models.CASCADE)  # Пользователь, который оставил отзыв
-    ad = models.ForeignKey(Ad, related_name='reviews', on_delete=models.CASCADE)  # Объявление, под которым оставлен отзыв
+    ad = models.ForeignKey(
+        Ad, related_name="reviews", on_delete=models.CASCADE
+    )  # Объявление, под которым оставлен отзыв
     created_at = models.DateTimeField(auto_now_add=True)  # Время и дата создания отзыва
 
     class Meta:
@@ -59,4 +64,4 @@ class Review(models.Model):
 
         :return: Строка с информацией об отзыве.
         """
-        return f'Review by {self.author} on {self.ad.title}'  # Возвращаем строку с информацией об отзыве
+        return f"Review by {self.author} on {self.ad.title}"  # Возвращаем строку с информацией об отзыве
