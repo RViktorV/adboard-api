@@ -1,10 +1,10 @@
-from rest_framework import viewsets
-from rest_framework import generics
+from rest_framework import viewsets, generics
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.pagination import PageNumberPagination
 
 from .models import Ad, Review
+from .permissions import IsAdminOrReadOnly, IsOwner
 from .serializers import AdSerializer, ReviewSerializer
 
 
@@ -22,23 +22,27 @@ class AdPagination(PageNumberPagination):
 class AdCreate(generics.CreateAPIView):
     """
     Представление для создания нового объявления.
+
     - POST /ads/create/ - Создать новое объявление.
     """
-    queryset = Ad.objects.all()
-    serializer_class = AdSerializer
+    queryset = Ad.objects.all()  # Запрос для получения всех объявлений
+    serializer_class = AdSerializer  # Сериализатор для преобразования данных
+    permission_classes = [IsAdminOrReadOnly]  # Только аутентифицированные пользователи могут создавать объявления
 
 
 class AdList(generics.ListAPIView):
     """
     Представление для получения списка объявлений.
+
     - GET /ads/ - Получить список всех объявлений с поддержкой пагинации и поиска.
     """
-    queryset = Ad.objects.all()
-    serializer_class = AdSerializer
-    pagination_class = AdPagination
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
-    filterset_fields = ['title']
-    search_fields = ['title', 'description']
+    queryset = Ad.objects.all()  # Запрос для получения всех объявлений
+    serializer_class = AdSerializer  # Сериализатор для преобразования данных
+    pagination_class = AdPagination  # Используем пагинацию
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter)  # Подключаем фильтрацию и поиск
+    filterset_fields = ['title']  # Поля, по которым можно фильтровать
+    search_fields = ['title', 'description']  # Поля, по которым можно выполнять поиск
+    permission_classes = [IsAdminOrReadOnly]  # Анонимные пользователи могут только получать список
 
 
 class AdDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -49,9 +53,10 @@ class AdDetail(generics.RetrieveUpdateDestroyAPIView):
     - PUT /ads/<id>/ - Обновить конкретное объявление по ID.
     - DELETE /ads/<id>/ - Удалить конкретное объявление по ID.
     """
-
     queryset = Ad.objects.all()  # Запрос для получения всех объявлений
     serializer_class = AdSerializer  # Сериализатор для преобразования данных
+    permission_classes = [
+        IsOwner | IsAdminOrReadOnly]  # Пользователь может редактировать/удалять только свои объявления
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
@@ -65,9 +70,9 @@ class ReviewViewSet(viewsets.ModelViewSet):
     - PUT /reviews/<id>/ - Обновить конкретный отзыв по ID.
     - DELETE /reviews/<id>/ - Удалить конкретный отзыв по ID.
     """
-
     queryset = Review.objects.all()  # Запрос для получения всех отзывов
     serializer_class = ReviewSerializer  # Сериализатор для преобразования данных
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)  # Подключаем фильтрацию и поиск
     filterset_fields = ["ad"]  # Поля, по которым можно фильтровать
     search_fields = ["comment"]  # Поля, по которым можно выполнять поиск
+    permission_classes = [IsOwner | IsAdminOrReadOnly]  # Пользователь может редактировать/удалять только свои отзывы
