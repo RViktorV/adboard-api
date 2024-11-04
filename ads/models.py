@@ -23,7 +23,12 @@ class Ad(models.Model):
     description = models.TextField()  # Описание товара
     author = models.ForeignKey(User, on_delete=models.CASCADE)  # Пользователь, который создал объявление
     created_at = models.DateTimeField(auto_now_add=True)  # Время и дата создания объявления
-    owner = models.ForeignKey(User, related_name='ads', on_delete=models.CASCADE, **NULLABLE,) # владелец объявления
+    owner = models.ForeignKey(
+        User,
+        related_name="ads",
+        on_delete=models.CASCADE,
+        **NULLABLE,
+    )  # владелец объявления
 
     class Meta:
         ordering = ["-created_at"]  # Сортировка по дате создания (чем новее, тем выше)
@@ -56,7 +61,12 @@ class Review(models.Model):
         Ad, related_name="reviews", on_delete=models.CASCADE
     )  # Объявление, под которым оставлен отзыв
     created_at = models.DateTimeField(auto_now_add=True)  # Время и дата создания отзыва
-    owner = models.ForeignKey(User, related_name='comments', on_delete=models.CASCADE, **NULLABLE,) # владелец отзыва
+    owner = models.ForeignKey(
+        User,
+        related_name="comments",
+        on_delete=models.CASCADE,
+        **NULLABLE,
+    )  # владелец отзыва
 
     class Meta:
         verbose_name = "Отзыв"

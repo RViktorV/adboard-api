@@ -25,6 +25,7 @@ class AdCreate(generics.CreateAPIView):
 
     - POST /ads/create/ - Создать новое объявление.
     """
+
     queryset = Ad.objects.all()  # Запрос для получения всех объявлений
     serializer_class = AdSerializer  # Сериализатор для преобразования данных
     permission_classes = [IsAdminOrReadOnly]  # Только аутентифицированные пользователи могут создавать объявления
@@ -36,12 +37,13 @@ class AdList(generics.ListAPIView):
 
     - GET /ads/ - Получить список всех объявлений с поддержкой пагинации и поиска.
     """
+
     queryset = Ad.objects.all()  # Запрос для получения всех объявлений
     serializer_class = AdSerializer  # Сериализатор для преобразования данных
     pagination_class = AdPagination  # Используем пагинацию
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)  # Подключаем фильтрацию и поиск
-    filterset_fields = ['title']  # Поля, по которым можно фильтровать
-    search_fields = ['title', 'description']  # Поля, по которым можно выполнять поиск
+    filterset_fields = ["title"]  # Поля, по которым можно фильтровать
+    search_fields = ["title", "description"]  # Поля, по которым можно выполнять поиск
     permission_classes = [IsAdminOrReadOnly]  # Анонимные пользователи могут только получать список
 
 
@@ -53,10 +55,12 @@ class AdDetail(generics.RetrieveUpdateDestroyAPIView):
     - PUT /ads/<id>/ - Обновить конкретное объявление по ID.
     - DELETE /ads/<id>/ - Удалить конкретное объявление по ID.
     """
+
     queryset = Ad.objects.all()  # Запрос для получения всех объявлений
     serializer_class = AdSerializer  # Сериализатор для преобразования данных
     permission_classes = [
-        IsOwner | IsAdminOrReadOnly]  # Пользователь может редактировать/удалять только свои объявления
+        IsOwner | IsAdminOrReadOnly
+    ]  # Пользователь может редактировать/удалять только свои объявления
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
@@ -70,6 +74,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     - PUT /reviews/<id>/ - Обновить конкретный отзыв по ID.
     - DELETE /reviews/<id>/ - Удалить конкретный отзыв по ID.
     """
+
     queryset = Review.objects.all()  # Запрос для получения всех отзывов
     serializer_class = ReviewSerializer  # Сериализатор для преобразования данных
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)  # Подключаем фильтрацию и поиск
