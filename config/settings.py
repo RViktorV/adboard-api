@@ -2,6 +2,7 @@ import os
 from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
+import sys
 
 load_dotenv()
 
@@ -70,6 +71,12 @@ DATABASES = {
         "PORT": os.getenv("POSTGRES_PORT"),
     }
 }
+# Если запущены тесты, использовать SQLite в памяти
+if 'test' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
