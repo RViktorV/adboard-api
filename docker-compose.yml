@@ -1,5 +1,3 @@
-version: "3"  # Версия Docker Compose
-
 services:
   db:
     image: postgres  # Используем официальный образ PostgreSQL
