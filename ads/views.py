@@ -2,6 +2,7 @@ from rest_framework import viewsets, generics
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Ad, Review
 from .permissions import IsAdminOrReadOnly, IsOwner
@@ -28,7 +29,7 @@ class AdCreate(generics.CreateAPIView):
 
     queryset = Ad.objects.all()  # Запрос для получения всех объявлений
     serializer_class = AdSerializer  # Сериализатор для преобразования данных
-    permission_classes = [IsAdminOrReadOnly]  # Только аутентифицированные пользователи могут создавать объявления
+    permission_classes = [IsAuthenticated]  # Только аутентифицированные пользователи могут создавать объявления
 
 
 class AdList(generics.ListAPIView):
