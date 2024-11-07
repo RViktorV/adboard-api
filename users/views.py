@@ -147,6 +147,9 @@ class ResetPasswordConfirmView(APIView):
         token = request.data.get("token")  # Извлекаем токен из запроса
         new_password = request.data.get("new_password")  # Извлекаем новый пароль из запроса
 
+        if not uid or not token:
+            return Response({"error": "UID и token обязательны"}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
             user_id = urlsafe_base64_decode(uid).decode()  # Декодируем UID
             user = User.objects.get(pk=user_id)  # Находим пользователя по ID
@@ -169,68 +172,6 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
     permission_classes = [IsAuthenticated]  # Закрываем доступ авторизацией
-
-# class ResetPasswordRequestSerializer(serializers.Serializer):
-#     email = serializers.EmailField()
-#
-# class ResetPasswordConfirmSerializer(serializers.Serializer):
-#     uid = serializers.CharField()
-#     token = serializers.CharField()
-#     new_password = serializers.CharField(min_length=8)
-#
-# class ResetPasswordRequestView(APIView):
-#     permission_classes = [AllowAny]
-#
-#     def post(self, request):
-#         serializer = ResetPasswordRequestSerializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#
-#         email = serializer.validated_data['email']
-#         try:
-#             user = User.objects.get(email=email)
-#         except User.DoesNotExist:
-#             return Response({"message": "Ссылка для сброса пароля отправлена на указанный email."}, status=status.HTTP_200_OK)
-#
-#         token = default_token_generator.make_token(user)
-#         uid = urlsafe_base64_encode(force_bytes(user.pk))
-#         reset_url = f"{settings.FRONTEND_URL}/reset_password_confirm/{uid}/{token}/"
-#
-#         subject = "Сброс пароля"
-#         message = (
-#             f"Здравствуйте, {user.first_name}!\n\n"
-#             f"Для сброса пароля перейдите по следующей ссылке: {reset_url}\n\n"
-#             "Ссылка действительна в течение ограниченного времени.\n\n"
-#             "Если вы не запрашивали сброс пароля, проигнорируйте это письмо."
-#         )
-#         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
-#
-#         return Response({"message": "Ссылка для сброса пароля отправлена на указанный email."}, status=status.HTTP_200_OK)
-#
-# class ResetPasswordConfirmView(APIView):
-#     permission_classes = [AllowAny]
-#
-#     def post(self, request):
-#         serializer = ResetPasswordConfirmSerializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#
-#         uid = serializer.validated_data['uid']
-#         token = serializer.validated_data['token']
-#         new_password = serializer.validated_data['new_password']
-#
-#         try:
-#             user_id = urlsafe_base64_decode(uid).decode()
-#             user = User.objects.get(pk=user_id)
-#         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-#             return Response({"error": "Неверный UID."}, status=status.HTTP_400_BAD_REQUEST)
-#
-#         if not default_token_generator.check_token(user, token):
-#             return Response({"error": "Недействительный или истекший токен."}, status=status.HTTP_400_BAD_REQUEST)
-#
-#         user.set_password(new_password)
-#         user.save()
-#
-#         return Response({"message": "Пароль успешно изменён."}, status=status.HTTP_200_OK)
-
 
 class UserProfileView(APIView):
     """

@@ -5,7 +5,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Ad, Review
-from .permissions import IsAdminOrReadOnly, IsOwner
+from .permissions import IsAdminOrReadOnly, IsOwner, IsAuthor
 from .serializers import AdSerializer, ReviewSerializer
 
 
@@ -30,6 +30,10 @@ class AdCreate(generics.CreateAPIView):
     queryset = Ad.objects.all()  # Запрос для получения всех объявлений
     serializer_class = AdSerializer  # Сериализатор для преобразования данных
     permission_classes = [IsAuthenticated]  # Только аутентифицированные пользователи могут создавать объявления
+
+    def perform_create(self, serializer):
+        # Устанавливаем поле author на текущего пользователя
+        serializer.save(author=self.request.user)
 
 
 class AdList(generics.ListAPIView):
@@ -64,6 +68,7 @@ class AdDetail(generics.RetrieveUpdateDestroyAPIView):
     ]  # Пользователь может редактировать/удалять только свои объявления
 
 
+
 class ReviewViewSet(viewsets.ModelViewSet):
     """
     Представление для работы с отзывами.
@@ -81,4 +86,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)  # Подключаем фильтрацию и поиск
     filterset_fields = ["ad"]  # Поля, по которым можно фильтровать
     search_fields = ["comment"]  # Поля, по которым можно выполнять поиск
-    permission_classes = [IsOwner | IsAdminOrReadOnly]  # Пользователь может редактировать/удалять только свои отзывы
+    permission_classes = [IsOwner | IsAdminOrReadOnly | IsAuthor]  # Пользователь может редактировать/удалять только свои отзывы
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)  # Автоматически устанавливать автора для вошедшего в систему пользователя
+
