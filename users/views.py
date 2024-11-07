@@ -23,6 +23,7 @@ from rest_framework import viewsets
 
 User = get_user_model()  # Получаем кастомную модель пользователя
 
+
 class RegisterView(generics.CreateAPIView):
     """
     Представление для регистрации новых пользователей.
@@ -62,7 +63,6 @@ class RegisterView(generics.CreateAPIView):
                 "access": str(refresh.access_token),  # Токен access
             }
         )
-
 
 
 class ResetPasswordRequestView(APIView):
@@ -172,6 +172,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
     permission_classes = [IsAuthenticated]  # Закрываем доступ авторизацией
+
 
 class UserProfileView(APIView):
     """

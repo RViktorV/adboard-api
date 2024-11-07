@@ -68,7 +68,6 @@ class AdDetail(generics.RetrieveUpdateDestroyAPIView):
     ]  # Пользователь может редактировать/удалять только свои объявления
 
 
-
 class ReviewViewSet(viewsets.ModelViewSet):
     """
     Представление для работы с отзывами.
@@ -86,8 +85,11 @@ class ReviewViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)  # Подключаем фильтрацию и поиск
     filterset_fields = ["ad"]  # Поля, по которым можно фильтровать
     search_fields = ["comment"]  # Поля, по которым можно выполнять поиск
-    permission_classes = [IsOwner | IsAdminOrReadOnly | IsAuthor]  # Пользователь может редактировать/удалять только свои отзывы
+    permission_classes = [
+        IsOwner | IsAdminOrReadOnly | IsAuthor
+    ]  # Пользователь может редактировать/удалять только свои отзывы
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)  # Автоматически устанавливать автора для вошедшего в систему пользователя
-
+        serializer.save(
+            author=self.request.user
+        )  # Автоматически устанавливать автора для вошедшего в систему пользователя

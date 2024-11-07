@@ -2,8 +2,8 @@ from .settings import *  # Импортируем все основные нас
 
 # Настройки базы данных для тестов
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": ":memory:",
     }
 }
