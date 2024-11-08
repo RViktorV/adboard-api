@@ -7,17 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Ad, Review
 from .permissions import IsAdminOrReadOnly, IsOwner, IsAuthor
 from .serializers import AdSerializer, ReviewSerializer
-
-
-class AdPagination(PageNumberPagination):
-    """
-    Пагинация для объявлений.
-    Ограничение на 4 объекта на странице.
-    """
-
-    page_size = 4  # Количество объектов на странице
-    page_size_query_param = "page_size"  # Позволяет клиенту задавать размер страницы через параметр запроса
-    max_page_size = 100  # Максимально допустимый размер страницы
+from .pagination import AdPagination
 
 
 class AdCreate(generics.CreateAPIView):
